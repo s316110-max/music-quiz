@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>我的猜歌小遊戲</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; width: 350px; }
+        h1 { color: #333; font-size: 24px; }
+        audio { width: 100%; margin: 20px 0; }
+        input { width: 90%; padding: 12px; margin-bottom: 20px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; }
+        input:focus { border-color: #007bff; }
+        button { background: #007bff; color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-size: 16px; width: 100%; }
+        button:hover { background: #0056b3; }
+        #feedback { margin-top: 15px; font-weight: bold; min-height: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>音樂猜猜看</h1>
+    <div style="color: #666; margin-bottom: 10px;">第 <span id="q-num">1</span> 題</div>
+    <audio id="audio-player" controls></audio>
+    <input type="text" id="user-input" placeholder="請輸入歌名..." onkeypress="if(event.key==='Enter') check()">
+    <button onclick="check()">送出答案</button>
+    <div id="feedback"></div>
+</div>
+
+<script>
+    // 這裡要對應你 songs 資料夾裡的檔名
+    const quizData = [
+        { file: '好好先生.mp3', answer: '好好先生' },
+        { file: '告白氣球.mp3', answer: '告白氣球' },
+        { file: '缺口.mp3', answer: '缺口' },
+        { file: '等你下課.mp3', answer: '等你下課' },
+        { file: '蝸牛.mp3', answer: '蝸牛' }
+    ];
+
+    let current = 0;
+    const player = document.getElementById('audio-player');
+    const input = document.getElementById('user-input');
+    const feedback = document.getElementById('feedback');
+    const qNum = document.getElementById('q-num');
+
+    function loadQuiz() {
+        if (current < quizData.length) {
+            player.src = quizData[current].file;
+            qNum.innerText = current + 1;
+            input.value = '';
+            feedback.innerText = '';
+        } else {
+            document.querySelector('.card').innerHTML = "<h1>🎉 恭喜通關！</h1><p>你答對了所有題目！</p><button onclick='location.reload()'>再玩一次</button>";
+        }
+    }
+
+    function check() {
+        if (input.value.trim() === quizData[current].answer) {
+            feedback.style.color = "green";
+            feedback.innerText = "正確！下一題...";
+            current++;
+            setTimeout(loadQuiz, 1000);
+        } else {
+            feedback.style.color = "red";
+            feedback.innerText = "猜錯了，再試一次！";
+        }
+    }
+
+    loadQuiz();
+</script>
+
+</body>
+</html>
